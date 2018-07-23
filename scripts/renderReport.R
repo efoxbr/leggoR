@@ -13,6 +13,12 @@ render_plot_single_house <- function(param_id, param_casa) {
   )
 }
 
+render_house_df_reports <- function(df) {
+  df %>% 
+    rowwise() %>%
+    do(render_plot_single_house(param_id = .$id, param_casa = .$casa))
+}
+
 render_plot_all <- function(senado_id, camara_id) {
   render(
     here::here('scripts/gera-relatorio-projeto-todas-as-casas.Rmd'),
