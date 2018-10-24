@@ -1,0 +1,18 @@
+---
+title: "Eventos Senado"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(magrittr)
+```
+
+```{r eventos_senado, echo=FALSE}
+url_eventos_senado <- "http://legis.senado.gov.br/dadosabertos/materia/situacoes"
+eventos_senado <- jsonlite::fromJSON(url_eventos_senado, flatten = T)$ListaSituacoes$Situacoes$Situacao %>%
+  dplyr::mutate(Codigo = as.integer(Codigo)) %>%
+  dplyr::arrange(Codigo)
+
+knitr::kable(eventos_senado)
+```

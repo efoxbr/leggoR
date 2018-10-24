@@ -1,0 +1,18 @@
+---
+title: "Eventos Câmara"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(magrittr)
+```
+
+```{r eventos_senado, echo=FALSE}
+url_eventos_camara <- "https://dadosabertos.camara.leg.br/api/v2/referencias/tiposTramitacao"
+eventos_camara <- jsonlite::fromJSON(url_eventos_camara, flatten = T)$dados %>%
+  dplyr::mutate(id = as.integer(id)) %>%
+  dplyr::arrange(id)
+
+knitr::kable(eventos_camara)
+```
