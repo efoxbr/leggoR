@@ -74,37 +74,23 @@ get_energia <- function(tramitacao_df, days_ago = 30, pivot_day = lubridate::tod
 #' }
 get_historico_energia_recente <- function(eventos_df, granularidade = 's', decaimento = 0.05, max_date = lubridate::now()) {
   #Remove tempo do timestamp da tramitação
-  eventos_extendidos <- eventos_df %>%
+  eventos_df_truncado <- eventos_df %>%
     dplyr::mutate(data = lubridate::floor_date(data_hora, unit="day"))
   
   #Adiciona linhas para os dias úteis nos quais não houve movimentações na tramitação
-  #Remove linhas referentes a dias de recesso parlamentar
-  full_dates <- data.frame(data = seq(min(eventos_extendidos$data), max_date, by = "1 day"))
-  eventos_extendidos <- merge(full_dates, eventos_extendidos, by="data", all.x = TRUE) %>%
+  full_dates <- data.frame(data = seq(min(eventos_df_truncado$data), max_date, by = "1 day"))
+  eventos_extendidos <- merge(full_dates, eventos_df_truncado, by="data", all.x = TRUE) %>%
+    #Remove linhas referentes a dias de recesso parlamentar
     filtra_dias_nao_uteis_congresso() %>%
+    #Trunca as datas para se referirem ao primeiro dia da semana à qual as mesmas pertencem
+    dplyr::mutate(periodo = (lubridate::floor_date(data, unit="week") + lubridate::days(1))) %>%
+    #Adiciona os pesos previamente estabelecidos para os eventos
     dplyr::left_join(get_pesos_eventos(), by='evento')
   
-  energia_periodo <- data.frame()
-  
-  #Agrupa eventos por período
-  if (granularidade == 'd') {
-    energia_periodo <- eventos_extendidos %>%
-      dplyr::group_by(data)
-  } else if (granularidade == 's') {
-    energia_periodo <- eventos_extendidos %>%
-      dplyr::mutate(semana = lubridate::week(data),
-                    ano = lubridate::year(data)) %>%
-      dplyr::group_by(ano,semana)
-  } else if (granularidade == 'm') {
-    energia_periodo <- eventos_extendidos %>%
-      dplyr::mutate(mes = lubridate::month(data),
-                    ano = lubridate::year(data)) %>%
-      dplyr::group_by(ano,mes)
-  }
-  
-  energia_periodo <- energia_periodo %>% 
-    dplyr::summarize(periodo = dplyr::first(data),
-                     energia_periodo = sum(peso, na.rm = T)) %>%
+  #Agrupa energia por período e realiza soma dos eventos do período ponderada pelos seus respectivos pesos
+  energia_periodo <- eventos_extendidos %>%
+    dplyr::group_by(periodo) %>%
+    dplyr::summarize(energia_periodo = sum(peso, na.rm = T)) %>%
     dplyr::ungroup() %>%
     dplyr::select(periodo,energia_periodo) %>%
     dplyr::arrange(periodo)
