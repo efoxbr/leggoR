@@ -325,6 +325,7 @@ extract_casas_in_camara <- function(tramitacao_df, casa_name) {
       fase_global = casa_name,
       local =
         dplyr::case_when(
-          (stringr::str_detect(tolower(texto_tramitacao), camara_env$plen_global$plenario) & sigla_local == "PLEN") ~ "Plenário",
+          ((stringr::str_detect(tolower(texto_tramitacao), camara_env$plen_global$plenario)) & sigla_local == "PLEN") ~ "Plenário",
+            ((tolower(descricao_situacao) == "pronta para pauta") & sigla_local == "PLEN") ~ "Plenário",
           sigla_local != "PLEN" & (sigla_local %in% camara_env$comissoes$siglas_comissoes_antigas | sigla_local %in% camara_env$comissoes$siglas_comissoes | stringr::str_detect(tolower(sigla_local), "^pl"))  ~ "Comissões"))
 }
