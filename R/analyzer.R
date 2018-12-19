@@ -78,7 +78,7 @@ get_temperatura <- function(tramitacao_df, days_ago = 30, pivot_day = lubridate:
 #' prop <- agoradigital::fetch_proposicao(id,casa,TRUE)
 #' tram <- agoradigital::fetch_tramitacao(id,casa,TRUE)
 #' proc_tram <- agoradigital::process_proposicao(prop,tram,casa)
-#' get_historico_temperatura_recente(proc_tram, granularidade = 's', decaimento = 0.05)
+#' get_historico_temperatura_recente(proc_tram, granularidade = 's', decaimento = 0.25)
 #' }
 get_historico_temperatura_recente <- function(eventos_df, granularidade = 's', decaimento = 0.25, max_date = lubridate::now()) {
   #Remove tempo do timestamp da tramitação
@@ -100,9 +100,9 @@ get_historico_temperatura_recente <- function(eventos_df, granularidade = 's', d
     dplyr::mutate(peso_base = dplyr::if_else(is.na(prop_id),0,1)) %>%
     dplyr::left_join(pesos_eventos, by="evento") %>%
     dplyr::left_join(pesos_locais, by="local") %>%
-    dplyr::mutate(peso_evento = dplyr::if_else(is.na(peso),0,as.numeric(peso))) %>%
-    dplyr::mutate(peso_local = dplyr::if_else(is.na(peso_local),0,as.numeric(peso_local))) %>%
-    dplyr::mutate(peso_final = peso_base + peso_evento + peso_local)
+    dplyr::mutate(peso_evento = dplyr::if_else(is.na(peso),0.5,as.numeric(peso))) %>%
+    dplyr::mutate(peso_local = dplyr::if_else(is.na(peso_local),1,as.numeric(peso_local))) %>%
+    dplyr::mutate(peso_final = peso_base * peso_evento * peso_local)
   
   
   temperatura_periodo <- data.frame()

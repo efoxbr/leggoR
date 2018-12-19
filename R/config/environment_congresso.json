@@ -22,12 +22,12 @@
   },
   
   "tipos_eventos":[
-    {"tipo":"despacho", "label":"Despacho", "peso":0.25},
-    {"tipo":"discussao", "label":"Discussão", "peso":0.07},
-    {"tipo":"votacao", "label":"Votação", "peso":0.68}
+    {"tipo":"despacho", "label":"Despacho", "peso":10},
+    {"tipo":"discussao", "label":"Discussão", "peso":1},
+    {"tipo":"votacao", "label":"Votação", "peso":70}
   ], 
   
   "tipos_locais":[
-    {"tipo":"decisivo", "label":"Decisivo", "peso":0.68}
+    {"tipo":"decisivo", "label":"Decisivo", "peso":1.68}
   ]
 }
