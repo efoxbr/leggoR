@@ -45,7 +45,10 @@
     {"evento": "remetida_a_sancao", "texto_tramitacao": "(projeto( foi|) encaminhado à sanção presidencial)|(remessa à sanção.*)", "tipo":"votacao"},
     {"evento": "transformada_lei", "texto_tramitacao": "transformado na lei ordinária", "tipo": "votacao"},
     {"evento": "vetada_totalmente", "texto_tramitacao": "proposição vetada totalmente", "tipo": "votacao"},
-    {"evento": "parecer_comissao", "texto_tramitacao": "^encaminhada à publicação. parecer da comissão.*", "tipo": "votacao"}
+    {"evento": "parecer_comissao", "texto_tramitacao": "^encaminhada à publicação. parecer da comissão.*", "tipo": "votacao"},
+    {"evento": "recebimento_apensado", "texto_tramitacao": "^recebimento pel(o|a).*apensad(o|a) (à|ao).*", "tipo":"discussao"},
+    {"evento": "recebimento_com_apensamento", "texto_tramitacao": "^recebimento pel(o|a).*com (a|as) proposiç(ão|ões).*apensad(a|as).*", "tipo":"discussao"},
+    {"evento": "foi_desapensada", "texto_tramitacao": "^(desapense-se esta|desapensada) d(o|a).*", "tipo":"discussao"}
   ],
   
   "autor_voto_separado": {
